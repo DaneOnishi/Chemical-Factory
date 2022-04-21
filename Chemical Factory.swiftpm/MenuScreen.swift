@@ -35,7 +35,7 @@ class MenuScreen: SKScene {
         textures.append(SKTexture(imageNamed: "el rato 3-L"))
         textures.append(SKTexture(imageNamed: "el rato 2-L"))
         
-        let frames = SKAction.animate(with: textures, timePerFrame: 0.1, resize: true, restore: false)
+        let frames = SKAction.animate(with: textures, timePerFrame: 0.01, resize: true, restore: false)
         
         animation = SKAction.repeatForever(frames)
         elRato.run(animation)
@@ -46,8 +46,24 @@ class MenuScreen: SKScene {
         
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches { self.touchDown(atPoint: t.location(in: self)) }
+    }
+    
+  /*  override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches { self.touchMoved(toPoint: t.location(in: self)) }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for t in touches { self.touchUp(atPoint: t.location(in: self)) }
+    }
+   */
     func touchDown(atPoint pos : CGPoint) {
-                elRato.run(SKAction.move (to:factory.convert(pos,from: self),duration: 1.5), completion: {
+        elRato.run(SKAction.move (to:factory.convert(pos,from: self),duration: 0.4), completion: {
                         print("done")
                 })
         
