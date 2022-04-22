@@ -49,7 +49,7 @@ class MaterScreen: SKScene {
         hitBox2 = childNode(withName: "Hit Box 2") as! SKShapeNode
         fireParticle = (childNode(withName: "Fire Particle") as! SKReferenceNode)
         fireParticle.alpha = 0
-        gasParticle = imagePlaceholder.childNode(withName: "Gas Particle") as! SKReferenceNode
+        gasParticle = childNode(withName: "Gas Particle") as! SKReferenceNode
         gasParticle.alpha = 0
         imagePlaceholder = childNode(withName: "Image Placeholder") as! SKSpriteNode
 //        imagePlaceholder.alpha = 0
