@@ -17,7 +17,6 @@ class MenuScreen: SKScene {
     override func didMove(to view: SKView) {
         factory = (childNode(withName: "Factory Big") as! SKSpriteNode)
         elRato = factory.childNode(withName: "el rato 1-L") as! SKSpriteNode
-        
         elRato.position = CGPoint(x: 150, y: 200)
         animationSetup()
         

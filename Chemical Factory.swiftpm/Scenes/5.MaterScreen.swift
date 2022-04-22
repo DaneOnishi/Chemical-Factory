@@ -52,7 +52,7 @@ class MaterScreen: SKScene {
         gasParticle = childNode(withName: "Gas Particle") as! SKReferenceNode
         gasParticle.alpha = 0
         imagePlaceholder = childNode(withName: "Image Placeholder") as! SKSpriteNode
-//        imagePlaceholder.alpha = 0
+        imagePlaceholder.alpha = 0
         imageList = [waterItem, fireItem, iodoItem, potionItem]
         label = (childNode(withName: "label") as! SKLabelNode)
         moleculeImage = (childNode(withName: "Molecule Image") as! SKSpriteNode)
@@ -66,46 +66,54 @@ class MaterScreen: SKScene {
         
     }
     
+    lazy var audioSession = AVAudioSession.sharedInstance()
+    
     func initMicrophone() {
-//        let documents = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0])
-//        let url = documents.appendingPathComponent("record.caf")
-//        let recordSettings: [String: Any] = [
-//            AVFormatIDKey:              kAudioFormatAppleIMA4,
-//            AVSampleRateKey:            44100.0,
-//            AVNumberOfChannelsKey:      2,
-//            AVEncoderBitRateKey:        12800,
-//            AVLinearPCMBitDepthKey:     16,
-//            AVEncoderAudioQualityKey:   AVAudioQuality.max.rawValue
-//        ]
-//
-//        let audioSession = AVAudioSession.sharedInstance()
-//        do {
-//            try audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .default)
-//            try audioSession.setActive(true)
-//            try recorder = AVAudioRecorder(url:url, settings: recordSettings)
-//
-//        } catch {
-//            return
-//        }
-//
-//        recorder.prepareToRecord()
-//        recorder.isMeteringEnabled = true
-//        recorder.record()
+        let documents = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(FileManager.SearchPathDirectory.documentDirectory, FileManager.SearchPathDomainMask.userDomainMask, true)[0])
+        let url = documents.appendingPathComponent("record.caf")
+        let recordSettings: [String: Any] = [
+            AVFormatIDKey:              kAudioFormatAppleIMA4,
+            AVSampleRateKey:            44100.0,
+            AVNumberOfChannelsKey:      2,
+            AVEncoderBitRateKey:        12800,
+            AVLinearPCMBitDepthKey:     16,
+            AVEncoderAudioQualityKey:   AVAudioQuality.max.rawValue
+        ]
+        audioSession.requestRecordPermission { allowed in
+            print("AE,", allowed)
+            guard allowed else { return }
+            self.isSoundAllowed = allowed
+            do {
+                try self.audioSession.setCategory(AVAudioSession.Category.playAndRecord, mode: .default)
+                try self.audioSession.setActive(true)
+                try self.recorder = AVAudioRecorder(url:url, settings: recordSettings)
+            } catch {
+                return
+            }
+
+            self.recorder.prepareToRecord()
+            self.recorder.isMeteringEnabled = true
+            self.recorder.record()
+        }
     }
+    private var isSoundAllowed: Bool = false
+    
     
     func updateMic() {
-//        recorder.updateMeters()
-//        let level = recorder.averagePower(forChannel: 0)
-//        if level <= -30 {
-//            label.text = "Channel 0 Level: \(level)\n Channel 1 Level: \(recorder.averagePower(forChannel: 1))\n Channel 2 Level: \(recorder.averagePower(forChannel: 2))"
-//            return
-//        }
-//
-//        let proportion = CGFloat(maxMicLevel / level)
-//
-//        intensity = min(intensity + proportion * 0.037, 1)
-//
-//        label.text = "Intensity: \(intensity)\n Level: \(level)\n Proportion\(proportion)"
+        guard isSoundAllowed, let recorder = recorder else { return }
+        print("UPDATING")
+        recorder.updateMeters()
+        let level = recorder.averagePower(forChannel: 0)
+        if level <= -30 {
+            label.text = "Channel 0 Level: \(level)\n Channel 1 Level: \(recorder.averagePower(forChannel: 1))\n Channel 2 Level: \(recorder.averagePower(forChannel: 2))"
+            return
+        }
+
+        let proportion = CGFloat(maxMicLevel / level)
+
+        intensity = min(intensity + proportion * 0.037, 1)
+
+        label.text = "Intensity: \(intensity)\n Level: \(level)\n Proportion\(proportion)"
     }
     
     func enableNodes(nodes: [SKSpriteNode]) {

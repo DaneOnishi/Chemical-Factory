@@ -26,6 +26,5 @@ class SplashScreen: SKScene {
     override func update(_ currentTime: TimeInterval) {
         
     }
-    
 }
 
