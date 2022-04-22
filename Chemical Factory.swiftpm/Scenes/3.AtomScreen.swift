@@ -45,7 +45,7 @@ class AtomScreen: SKScene {
         neutronItem = (childNode(withName: "Neutron") as! SKSpriteNode)
         eletronItem = (childNode(withName: "Eletron") as! SKSpriteNode)
         nucleoItem = (childNode(withName: "Nucleo") as! SKSpriteNode)
-
+        
         imageList = [protonItem, neutronItem, eletronItem, nucleoItem]
         
         for image in imageList {
@@ -102,7 +102,7 @@ class AtomScreen: SKScene {
                 ])
             )
         ]))
-
+        
         fullAtom.childNode(withName: "eletron-4")?.run(.sequence([
             .wait(forDuration: duration/6),
             .repeatForever(
@@ -190,7 +190,7 @@ class AtomScreen: SKScene {
             dragging = nil
         }
     }
-        
+    
     func touchMoved(atPoint pos : CGPoint) {
         dragging?.position = pos
     }
@@ -213,3 +213,5 @@ class AtomScreen: SKScene {
     
     
 }
+
+
