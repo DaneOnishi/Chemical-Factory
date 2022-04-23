@@ -29,7 +29,7 @@ class MaterScreen: SKScene {
     var moleculeImage: SKSpriteNode!
     
     var recorder: AVAudioRecorder!
-    let maxMicLevel: Float = -1.5
+    let maxMicLevel: Float = 1
     var intensity: CGFloat = 0
     var icedPotion: SKSpriteNode!
     var icedPotionPosition: CGPoint!
@@ -111,7 +111,7 @@ class MaterScreen: SKScene {
 
         let proportion = CGFloat(maxMicLevel / level)
 
-        intensity = min(intensity + proportion * 0.037, 1)
+        intensity = intensity + proportion
 
         label.text = "Intensity: \(intensity)\n Level: \(level)\n Proportion\(proportion)"
     }
@@ -124,10 +124,18 @@ class MaterScreen: SKScene {
     
     func animateBoiling() {
         var boilingSequence = [SKTexture]()
-        boilingSequence.append(SKTexture(imageNamed: ""))
-        boilingSequence.append(SKTexture(imageNamed: ""))
-        boilingSequence.append(SKTexture(imageNamed: ""))
-        boilingSequence.append(SKTexture(imageNamed: ""))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-1"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-2"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-3"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-4"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-5"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-6"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-7"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-6"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-5"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-4"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-3"))
+        boilingSequence.append(SKTexture(imageNamed: "C-B-2"))
         
         let frames = SKAction.animate(withNormalTextures: boilingSequence, timePerFrame: 0.2)
         animation = SKAction.repeatForever(frames)
@@ -144,6 +152,7 @@ class MaterScreen: SKScene {
     
     override func update(_ currentTime: TimeInterval) {
         updateMic()
+        updateScene()
     }
     
     func touchDown(atPoint pos : CGPoint) {
@@ -174,20 +183,22 @@ class MaterScreen: SKScene {
                 moleculeImage.texture = SKTexture(imageNamed: "Water")
             } else if dragging?.name == fireItem.name {
                 fireParticle.alpha = 1
-                let texture = SKTexture(imageNamed: "Calderone with bubbles")
+                let texture = SKTexture(imageNamed: "C-B-1")
+                animateBoiling()
                 calderone.size = texture.size()
                 calderone.texture = texture
                 fireParticle.alpha = 1
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
                 gasParticle.alpha = 0
                 moleculeImage.texture = SKTexture(imageNamed: "Fire")
+                
             }
             dragging = nil
         }
         
         if hitBox2.contains(pos) {
             if dragging?.name == iodoItem.name {
-                let texture = SKTexture(imageNamed: "Iodo")
+                let texture = SKTexture(imageNamed: "Iodo Iso")
                 imagePlaceholder.size = texture.size()
                 imagePlaceholder.texture = texture
                 imagePlaceholder.alpha = 1
@@ -195,14 +206,13 @@ class MaterScreen: SKScene {
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
                 moleculeImage.texture = SKTexture(imageNamed: "Iodo")
             } else if dragging?.name == potionItem.name {
-                let texture = SKTexture(imageNamed: "Potion Empty")
+                let texture = SKTexture(imageNamed: "Potion Iso")
                 imagePlaceholder.size = texture.size()
                 imagePlaceholder.texture = texture
                 imagePlaceholder.alpha = 1
                 gasParticle.alpha = 0
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
                 moleculeImage.texture = SKTexture(imageNamed: "Potion")
-                updateScene()
             }
             dragging = nil
             

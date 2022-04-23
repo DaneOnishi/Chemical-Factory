@@ -26,6 +26,8 @@ class AtomScreen: SKScene {
     var popUp: SKSpriteNode!
     var imageList: [SKSpriteNode]!
     var magicalWand: SKSpriteNode!
+    var fullAtomInitialPosition: CGPoint!
+    var fullAtomFinalPosition: CGPoint!
     
     private var animation: SKAction!
     
@@ -38,6 +40,8 @@ class AtomScreen: SKScene {
         animateLightNode()
         
         fullAtom = (childNode(withName: "Full Atom") as! SKNode)
+        animateFullAtom()
+        
         hitBox = (childNode(withName: "Hit Box") as! SKSpriteNode)
         magicalWand = (childNode(withName: "Magical Wand") as! SKSpriteNode)
         
@@ -120,10 +124,21 @@ class AtomScreen: SKScene {
         
     }
     
+    func animateFullAtom() {
+        fullAtomInitialPosition = CGPoint(x: 190, y: -4)
+        fullAtom.position = fullAtomInitialPosition
+        fullAtomFinalPosition = CGPoint(x: 190, y: 1)
+        let move1 = SKAction.move(to: fullAtomFinalPosition, duration: 1)
+        let move2 = SKAction.move(to: fullAtomInitialPosition, duration: 1)
+        let sequenceRepeat = SKAction.repeatForever(SKAction.sequence([move1, move2]))
+        fullAtom.run(sequenceRepeat)
+    }
+    
     func showNodes(nodes: [SKSpriteNode]) {
         for node in nodes {
             node.alpha = 1
         }
+   
     }
     
     func animateLightNode() {
