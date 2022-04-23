@@ -9,6 +9,14 @@ import Foundation
 import SpriteKit
 
 class AtomScreen: SKScene {
+    
+    var performNavigation: (() -> ())?
+    static func buildScene(performNavigation: (() -> ())?) -> AtomScreen {
+        let scene = AtomScreen(fileNamed: "3.Atom")!
+        scene.performNavigation = performNavigation
+        return scene
+    }
+    
     var lightPoint: SKLightNode!
     var dragging: SKSpriteNode?
     var originalDraggingPosition: CGPoint?

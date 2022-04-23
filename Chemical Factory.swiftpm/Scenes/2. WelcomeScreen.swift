@@ -10,7 +10,12 @@ import SpriteKit
 import SwiftUI
 
 class WelcomeScreen: SKScene {
-    
+    var performNavigation: (() -> ())?
+    static func buildScene(performNavigation: (() -> ())?) -> WelcomeScreen {
+        let scene = WelcomeScreen(fileNamed: "2.WelcomeScreen")!
+        scene.performNavigation = performNavigation
+        return scene
+    }
     var witch:SKSpriteNode!
     var nextButton: SKSpriteNode!
     var talkPopUp: SKSpriteNode!
@@ -27,16 +32,21 @@ class WelcomeScreen: SKScene {
         witch = (childNode(withName: "Witch") as! SKSpriteNode)
         nextButton = (childNode(withName: "Next Button") as! SKSpriteNode)
         talkPopUp = (childNode(withName: "Talk Pop Up") as! SKSpriteNode)
-    }
-    
-    func nextScreen() {
+        
         
     }
     
+    func nextScreen() {
+    }
+    
     func setupNextDialogue() {
+        if dialogues.count >= 1 {
             let dialogue = dialogues.removeFirst()
             talkPopUp.texture = SKTexture(imageNamed: dialogue.popUp)
             witch.texture = SKTexture(imageNamed: dialogue.witchImage.rawValue)
+        } else if dialogues.count == 0 {
+            performNavigation?()
+        }
     }
     
     

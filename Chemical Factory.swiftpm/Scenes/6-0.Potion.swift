@@ -10,6 +10,13 @@ import SpriteKit
 
 class Potion: SKScene {
     
+    var performNavigation: (() -> ())?
+    static func buildScene(performNavigation: (() -> ())?) -> Potion {
+        let scene = Potion(fileNamed: "6-0.Potion")!
+        scene.performNavigation = performNavigation
+        return scene
+    }
+    
     var potion: SKSpriteNode!
     var stars: [SKSpriteNode]!
     var lightNode: SKLightNode!

@@ -8,6 +8,12 @@
 import SpriteKit
 
 class SplashScreen: SKScene {
+    var performNavigation: (() -> ())?
+    static func buildScene(performNavigation: (() -> ())?) -> SplashScreen {
+        let scene = SplashScreen(fileNamed: "0.SplashScreen")!
+        scene.performNavigation = performNavigation
+        return scene
+    }
     
     var logo:SKSpriteNode!
     
@@ -19,12 +25,14 @@ class SplashScreen: SKScene {
     func setupLogoAnimation() {
         var scale = SKAction.scale(by: 2, duration: 1)
         var fadeAlpha = SKAction.fadeAlpha(to: 0, duration: 0.4)
-        
-        logo.run(SKAction.sequence([scale,fadeAlpha]))
+        logo.run(SKAction.sequence([scale,fadeAlpha])) {
+            self.performNavigation?()
+        }
     }
     
     override func update(_ currentTime: TimeInterval) {
         
     }
+    
 }
 

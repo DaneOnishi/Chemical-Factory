@@ -11,6 +11,14 @@ import CoreAudio
 
 
 class MaterScreen: SKScene {
+    
+    var performNavigation: (() -> ())?
+    static func buildScene(performNavigation: (() -> ())?) -> MaterScreen {
+        let scene = MaterScreen(fileNamed: "5.MaterScreen")!
+        scene.performNavigation = performNavigation
+        return scene
+    }
+    
     var imageList: [SKSpriteNode]!
     var waterItem: SKSpriteNode!
     var fireItem: SKSpriteNode!
@@ -29,13 +37,19 @@ class MaterScreen: SKScene {
     var moleculeImage: SKSpriteNode!
     
     var recorder: AVAudioRecorder!
-    let maxMicLevel: Float = 1
+    let maxMicLevel: Float = -30
+    let minMicLevel: Float = -6.5
     var intensity: CGFloat = 0
     var icedPotion: SKSpriteNode!
     var icedPotionPosition: CGPoint!
     var imagePlaceholderPosition: CGPoint!
+    var gasMolecules: SKNode!
+    var liquidMolecules: SKNode!
+    var solidMolecules: SKNode!
     
     var animation: SKAction!
+    
+    var updatingSpritesFromMic = false
     
     override func didMove(to view: SKView) {
         waterItem = (childNode(withName: "Water") as! SKSpriteNode)
@@ -46,16 +60,19 @@ class MaterScreen: SKScene {
         popUp = (childNode(withName: "Talk Balone With Witch") as! SKSpriteNode)
         icedPotion = (childNode(withName: "Iced Potion") as! SKSpriteNode)
         hitBox = (childNode(withName: "Hit Box") as! SKShapeNode)
-        hitBox2 = childNode(withName: "Hit Box 2") as! SKShapeNode
+        hitBox2 = (childNode(withName: "Hit Box 2") as! SKShapeNode)
         fireParticle = (childNode(withName: "Fire Particle") as! SKReferenceNode)
         fireParticle.alpha = 0
-        gasParticle = childNode(withName: "Gas Particle") as! SKReferenceNode
+        gasParticle = (childNode(withName: "Gas Particle") as! SKReferenceNode)
         gasParticle.alpha = 0
-        imagePlaceholder = childNode(withName: "Image Placeholder") as! SKSpriteNode
+        imagePlaceholder = (childNode(withName: "Image Placeholder") as! SKSpriteNode)
         imagePlaceholder.alpha = 0
         imageList = [waterItem, fireItem, iodoItem, potionItem]
         label = (childNode(withName: "label") as! SKLabelNode)
-        moleculeImage = (childNode(withName: "Molecule Image") as! SKSpriteNode)
+        gasMolecules = (childNode(withName: "Gas Molecules") as! SKNode)
+        liquidMolecules = (childNode(withName: "Liquid Molecules") as! SKNode)
+        solidMolecules = (childNode(withName: "Solid Molecules") as! SKNode)
+        // moleculeImage = (childNode(withName: "Molecule Image") as! SKSpriteNode)
        
         
         for image in imageList {
@@ -104,16 +121,23 @@ class MaterScreen: SKScene {
         print("UPDATING")
         recorder.updateMeters()
         let level = recorder.averagePower(forChannel: 0)
-        if level <= -30 {
-            label.text = "Channel 0 Level: \(level)\n Channel 1 Level: \(recorder.averagePower(forChannel: 1))\n Channel 2 Level: \(recorder.averagePower(forChannel: 2))"
+        if level <= maxMicLevel {
+            intensity = 0
             return
         }
+        
+        let positiveLevel = level * -1
 
-        let proportion = CGFloat(maxMicLevel / level)
+        let proportion = 1 - ((positiveLevel + minMicLevel) / (-maxMicLevel + minMicLevel))
+        
+        intensity = CGFloat(min(proportion, 1))
+        
+       
+        if intensity >= 1 {
+            updatingSpritesFromMic = false
+        }
 
-        intensity = intensity + proportion
-
-        label.text = "Intensity: \(intensity)\n Level: \(level)\n Proportion\(proportion)"
+        label.text = "Intensity: \(intensity)"
     }
     
     func enableNodes(nodes: [SKSpriteNode]) {
@@ -144,9 +168,10 @@ class MaterScreen: SKScene {
     }
     
     fileprivate func updateScene() {
-        icedPotion.alpha = intensity
-        imagePlaceholder.alpha = 1 - intensity
-    
+        if updatingSpritesFromMic == true {
+            icedPotion.alpha = intensity
+            imagePlaceholder.alpha = 1 - intensity
+        }
     }
     
     
@@ -166,7 +191,6 @@ class MaterScreen: SKScene {
         }
     }
     
-    
     func touchUp(atPoint pos : CGPoint) {
         dragging?.setScale(1)
         if let originalDraggingPosition = originalDraggingPosition {
@@ -180,7 +204,10 @@ class MaterScreen: SKScene {
                 calderone.texture = texture
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
                 gasParticle.alpha = 0
-                moleculeImage.texture = SKTexture(imageNamed: "Water")
+                liquidMolecules.alpha = 1
+                solidMolecules.alpha = 0
+                gasMolecules.alpha = 0
+               // moleculeImage.texture = SKTexture(imageNamed: "Water")
             } else if dragging?.name == fireItem.name {
                 fireParticle.alpha = 1
                 let texture = SKTexture(imageNamed: "C-B-1")
@@ -190,7 +217,10 @@ class MaterScreen: SKScene {
                 fireParticle.alpha = 1
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
                 gasParticle.alpha = 0
-                moleculeImage.texture = SKTexture(imageNamed: "Fire")
+                gasMolecules.alpha = 1
+                liquidMolecules.alpha = 0
+                solidMolecules.alpha = 0
+                ////moleculeImage.texture = SKTexture(imageNamed: "Fire")
                 
             }
             dragging = nil
@@ -203,8 +233,10 @@ class MaterScreen: SKScene {
                 imagePlaceholder.texture = texture
                 imagePlaceholder.alpha = 1
                 gasParticle.alpha = 1
+                solidMolecules.alpha = 0
+                liquidMolecules.alpha = 0
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
-                moleculeImage.texture = SKTexture(imageNamed: "Iodo")
+                gasMolecules.alpha = 1
             } else if dragging?.name == potionItem.name {
                 let texture = SKTexture(imageNamed: "Potion Iso")
                 imagePlaceholder.size = texture.size()
@@ -212,10 +244,12 @@ class MaterScreen: SKScene {
                 imagePlaceholder.alpha = 1
                 gasParticle.alpha = 0
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
-                moleculeImage.texture = SKTexture(imageNamed: "Potion")
+                solidMolecules.alpha = 1
+                gasMolecules.alpha = 0
+                liquidMolecules.alpha = 0
+                updatingSpritesFromMic = true
             }
             dragging = nil
-            
         }
     }
     

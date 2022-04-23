@@ -18,7 +18,6 @@ struct ARViewContainer: UIViewRepresentable {
             // Adicionar a cena dentro da cena da ARView
             arView.scene.addAnchor(sceneAnchor)
         }
-        
         return arView
     }
     
