@@ -32,7 +32,7 @@ class Potion: SKScene {
         // setupStarsAnimation()
         setupPotionAnimation()
         setupLightAnimation()
-
+        
     }
     
     func setupPotionAnimation() {
@@ -54,17 +54,22 @@ class Potion: SKScene {
             ]))
     }
     
-//    func setupStarsAnimation() {
-//        for star in stars {
-//            star.texture = SKTexture(imageNamed: "Star")
-//            let fadeAlpha = SKAction.fadeAlpha(to: 0, duration: 0.4)
-//            let increaseAlpha = SKAction.fadeAlpha(to: 1, duration: 0.4)
-//
-//            star.run(SKAction.sequence([fadeAlpha,increaseAlpha]))
-//        }
-//    }
+    //    func setupStarsAnimation() {
+    //        for star in stars {
+    //            star.texture = SKTexture(imageNamed: "Star")
+    //            let fadeAlpha = SKAction.fadeAlpha(to: 0, duration: 0.4)
+    //            let increaseAlpha = SKAction.fadeAlpha(to: 1, duration: 0.4)
+    //
+    //            star.run(SKAction.sequence([fadeAlpha,increaseAlpha]))
+    //        }
+    //    }
     
     override func update(_ currentTime: TimeInterval) {
-        
+        run(.sequence([
+            .wait(forDuration: 4),
+            .run {
+                self.performNavigation?()
+            }
+        ]))
     }
 }

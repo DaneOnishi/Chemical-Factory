@@ -36,6 +36,15 @@ class AtomScreen: SKScene {
     var magicalWand: SKSpriteNode!
     var fullAtomInitialPosition: CGPoint!
     var fullAtomFinalPosition: CGPoint!
+    var atomDialogues: [SKSpriteNode]! = [
+        SKSpriteNode(imageNamed: "Dialogue-5"),
+        SKSpriteNode(imageNamed: "Dialogue-6")
+    ]
+    
+    
+    var nextButton: SKSpriteNode!
+    var hasGone = 0
+    var wasShown = false
     
     private var animation: SKAction!
     
@@ -46,17 +55,19 @@ class AtomScreen: SKScene {
         lightPoint = (childNode(withName: "LightPoint") as! SKLightNode)
         lightPoint.isEnabled = true
         animateLightNode()
-        
         fullAtom = (childNode(withName: "Full Atom") as! SKNode)
         animateFullAtom()
-        
+        nextButton = childNode(withName: "Next Button") as! SKSpriteNode
         hitBox = (childNode(withName: "Hit Box") as! SKSpriteNode)
         magicalWand = (childNode(withName: "Magical Wand") as! SKSpriteNode)
-        
         protonItem = (childNode(withName: "Proton") as! SKSpriteNode)
         neutronItem = (childNode(withName: "Neutron") as! SKSpriteNode)
         eletronItem = (childNode(withName: "Eletron") as! SKSpriteNode)
         nucleoItem = (childNode(withName: "Nucleo") as! SKSpriteNode)
+        verifyDialogue()
+        
+        popUp.texture = SKTexture(imageNamed: "Dialogue-5")
+        
         
         imageList = [protonItem, neutronItem, eletronItem, nucleoItem]
         
@@ -132,6 +143,12 @@ class AtomScreen: SKScene {
         
     }
     
+    func verifyDialogue() {
+        if hasGone == 4 {
+            popUp.texture = SKTexture(imageNamed: "Dialogue-10")
+        }
+    }
+    
     func animateFullAtom() {
         fullAtomInitialPosition = CGPoint(x: 190, y: -4)
         fullAtom.position = fullAtomInitialPosition
@@ -146,7 +163,7 @@ class AtomScreen: SKScene {
         for node in nodes {
             node.alpha = 1
         }
-   
+        
     }
     
     func animateLightNode() {
@@ -170,24 +187,40 @@ class AtomScreen: SKScene {
         ])))
     }
     
+    func setupNextDialogue2() {
+        for dialogue in atomDialogues {
+            if atomDialogues.count >= 1 {
+                atomDialogues.removeFirst()
+            }
+        }
+    }
     
-    
+    var draggingAllowed = false
     func touchDown(atPoint pos : CGPoint) {
-        for imagem in imageList {
-            if imagem.contains(pos) {
-                dragging = imagem
-                originalDraggingPosition = imagem.position
-                imagem.setScale(1.15)
-                imagem.zPosition = zTop
-                zTop += 1
-                return
+        if nextButton.contains(pos) {
+            if popUp.texture == SKTexture(imageNamed: "Dialogue-5")  {
+                popUp.texture = SKTexture(imageNamed: "Dialogue-6")
+                draggingAllowed = true
+            } else if hasGone == 4 {
+                performNavigation?()
             }
         }
         
-        if magicalWand.contains(pos) {
+        if magicalWand.contains(pos) && draggingAllowed {
             for image in imageList {
                 image.alpha = 1
             }
+        }
+        
+        for imagem in imageList where imagem.alpha == 1
+        && imagem.contains(pos)
+        && draggingAllowed {
+            dragging = imagem
+            originalDraggingPosition = imagem.position
+            imagem.setScale(1.15)
+            imagem.zPosition = zTop
+            zTop += 1
+            return
         }
     }
     
@@ -197,18 +230,26 @@ class AtomScreen: SKScene {
             dragging?.position = originalDraggingPosition
         }
         if hitBox.contains(pos) {
-            if dragging?.name == protonItem.name {
+            if dragging == protonItem {
                 showNodes(nodes: protons)
-                popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
-            } else if dragging?.name == neutronItem.name {
+                popUp.texture = SKTexture(imageNamed: "Dialogue-7")
+                hasGone += 1
+                dragging?.alpha = 0.5
+            } else if dragging == neutronItem {
                 showNodes(nodes: neutrons)
-                popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
-            } else if dragging?.name == nucleoItem.name {
+                popUp.texture = SKTexture(imageNamed: "Dialogue-8")
+                hasGone += 1
+                dragging?.alpha = 0.5
+            } else if dragging == nucleoItem {
                 showNodes(nodes: nucleus)
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
-            } else if dragging?.name == eletronItem.name {
+                hasGone += 1
+                dragging?.alpha = 0.5
+            } else if dragging == eletronItem {
                 showNodes(nodes: eletrons)
-                popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
+                popUp.texture = SKTexture(imageNamed: "Dialogue-9")
+                hasGone += 1
+                dragging?.alpha = 0.5
             }
             dragging = nil
         }

@@ -14,7 +14,7 @@ class MaterScreen: SKScene {
     
     var performNavigation: (() -> ())?
     static func buildScene(performNavigation: (() -> ())?) -> MaterScreen {
-        let scene = MaterScreen(fileNamed: "5.MaterScreen")!
+        let scene = MaterScreen(fileNamed: "5.Mater")!
         scene.performNavigation = performNavigation
         return scene
     }
@@ -46,8 +46,6 @@ class MaterScreen: SKScene {
     var gasMolecules: SKNode!
     var liquidMolecules: SKNode!
     var solidMolecules: SKNode!
-    
-    var animation: SKAction!
     
     var updatingSpritesFromMic = false
     
@@ -131,11 +129,6 @@ class MaterScreen: SKScene {
         let proportion = 1 - ((positiveLevel + minMicLevel) / (-maxMicLevel + minMicLevel))
         
         intensity = CGFloat(min(proportion, 1))
-        
-       
-        if intensity >= 1 {
-            updatingSpritesFromMic = false
-        }
 
         label.text = "Intensity: \(intensity)"
     }
@@ -145,7 +138,7 @@ class MaterScreen: SKScene {
             node.alpha = 1
         }
     }
-    
+
     func animateBoiling() {
         var boilingSequence = [SKTexture]()
         boilingSequence.append(SKTexture(imageNamed: "C-B-1"))
@@ -161,33 +154,46 @@ class MaterScreen: SKScene {
         boilingSequence.append(SKTexture(imageNamed: "C-B-3"))
         boilingSequence.append(SKTexture(imageNamed: "C-B-2"))
         
-        let frames = SKAction.animate(withNormalTextures: boilingSequence, timePerFrame: 0.2)
-        animation = SKAction.repeatForever(frames)
-        calderone.run(animation)
+
         
+        let frames = SKAction.animate(with: boilingSequence, timePerFrame: 0.1, resize: false, restore: false)
+        let animation = SKAction.repeatForever(frames)
+        calderone.run(animation)
     }
     
     fileprivate func updateScene() {
         if updatingSpritesFromMic == true {
             icedPotion.alpha = intensity
             imagePlaceholder.alpha = 1 - intensity
+            
+            run(.sequence([
+                .wait(forDuration: 1),
+                .run {
+                    self.performNavigation?()
+                }
+            ]))
         }
+        
+        if intensity >= 1 {
+            updatingSpritesFromMic = false
+        }
+       
     }
     
     
     override func update(_ currentTime: TimeInterval) {
         updateMic()
         updateScene()
+        
+        print(calderone.hasActions())
     }
     
     func touchDown(atPoint pos : CGPoint) {
-        for imagem in imageList {
-            if imagem.contains(pos) {
-                dragging = imagem
-                originalDraggingPosition = imagem.position
-                imagem.setScale(1.15)
-                return
-            }
+        for imagem in imageList where imagem.alpha == 1 && imagem.contains(pos) {
+            dragging = imagem
+            originalDraggingPosition = imagem.position
+            imagem.setScale(1.15)
+            return
         }
     }
     
@@ -200,26 +206,39 @@ class MaterScreen: SKScene {
         if hitBox.contains(pos) {
             if dragging?.name == waterItem.name {
                 let texture = SKTexture(imageNamed: "Calderone with blue liquid")
+                
                 calderone.size = texture.size()
                 calderone.texture = texture
+                
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
+                
                 gasParticle.alpha = 0
                 liquidMolecules.alpha = 1
                 solidMolecules.alpha = 0
                 gasMolecules.alpha = 0
+                
+                fireItem.alpha = 1
+                waterItem.alpha = 0
+                iodoItem.alpha = 0
+                potionItem.alpha = 0
                // moleculeImage.texture = SKTexture(imageNamed: "Water")
             } else if dragging?.name == fireItem.name {
                 fireParticle.alpha = 1
                 let texture = SKTexture(imageNamed: "C-B-1")
-                animateBoiling()
                 calderone.size = texture.size()
                 calderone.texture = texture
+                animateBoiling()
                 fireParticle.alpha = 1
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
                 gasParticle.alpha = 0
                 gasMolecules.alpha = 1
                 liquidMolecules.alpha = 0
                 solidMolecules.alpha = 0
+                
+                fireItem.alpha = 0
+                waterItem.alpha = 0
+                iodoItem.alpha = 1
+                potionItem.alpha = 0
                 ////moleculeImage.texture = SKTexture(imageNamed: "Fire")
                 
             }
@@ -237,6 +256,11 @@ class MaterScreen: SKScene {
                 liquidMolecules.alpha = 0
                 popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
                 gasMolecules.alpha = 1
+                
+                fireItem.alpha = 0
+                waterItem.alpha = 0
+                iodoItem.alpha = 0
+                potionItem.alpha = 1
             } else if dragging?.name == potionItem.name {
                 let texture = SKTexture(imageNamed: "Potion Iso")
                 imagePlaceholder.size = texture.size()
@@ -248,6 +272,11 @@ class MaterScreen: SKScene {
                 gasMolecules.alpha = 0
                 liquidMolecules.alpha = 0
                 updatingSpritesFromMic = true
+                
+                fireItem.alpha = 0
+                waterItem.alpha = 0
+                iodoItem.alpha = 0
+                potionItem.alpha = 0
             }
             dragging = nil
         }

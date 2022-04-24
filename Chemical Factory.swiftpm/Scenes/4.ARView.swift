@@ -12,12 +12,6 @@ struct ARViewContainer: UIViewRepresentable {
     func makeUIView(context: Context) -> ARView {
         
         let arView = ARView(frame: .zero)
-
-        // Carregar o ponto âncora do arquivo "Box" (essa é a sua cena/modelo 3D)
-        if let sceneAnchor = try? Entity.loadAnchor(named: "Box") {
-            // Adicionar a cena dentro da cena da ARView
-            arView.scene.addAnchor(sceneAnchor)
-        }
         return arView
     }
     
