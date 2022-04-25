@@ -15,16 +15,14 @@ let package = Package(
     products: [
         .iOSApplication(
             name: "Chemical Factory",
-            targets: ["AppModule"],
+            targets: ["App"],
             bundleIdentifier: "br.com.daneonishi.Chemical-Factory",
             teamIdentifier: "U77829B9P3",
             displayVersion: "1.0",
             bundleVersion: "1",
             iconAssetName: "AppIcon",
-            accentColorAssetName: "AccentColor",
             supportedDeviceFamilies: [
-                .pad,
-                .phone
+                .pad
             ],
             supportedInterfaceOrientations: [
                 .portrait,
@@ -37,11 +35,11 @@ let package = Package(
     ],
     targets: [
         .executableTarget(
-            name: "AppModule",
-            path: ".",
+            name: "App",
+            path: "App",
             resources: [
                 .process("Resources")
             ]
-        )
+        ),
     ]
 )

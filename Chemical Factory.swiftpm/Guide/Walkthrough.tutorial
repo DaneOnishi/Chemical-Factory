@@ -1,0 +1,14 @@
+@GuideBook(title: "Chemical Factory!", icon: title.png, background: titleBackground.png, firstFile: ContentView.swift) {
+    @Guide {
+        @Step(title: "Yes!") {
+            @ContentAndMedia {
+                ![](Chemical Factory Logo_1.png)  
+                
+                Welcome to Chemical Factory! Help Curie make knowledge potions and learn chemistry from her!
+                
+                For a better experience, run this app in fullscreen 
+                
+            }   
+        }
+    }
+}
