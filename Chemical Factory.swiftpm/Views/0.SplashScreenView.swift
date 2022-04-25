@@ -16,7 +16,8 @@ struct SplashScreenView: View {
         
         VStack {
             NavigationLink(isActive: $navigated, destination: {
-                MenuScreenView()
+//                MenuScreenView()
+                ARViewScreenView()
             }) {
                 EmptyView()
             }

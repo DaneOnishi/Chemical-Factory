@@ -16,7 +16,7 @@ struct AtomScreenView: View {
         
         VStack {
             NavigationLink(isActive: $navigated, destination: {
-                WelcomeScreenView()
+                ARViewScreenView()
             }) {
                 EmptyView()
             }

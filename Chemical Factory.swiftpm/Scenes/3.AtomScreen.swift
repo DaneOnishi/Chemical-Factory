@@ -198,7 +198,7 @@ class AtomScreen: SKScene {
     var draggingAllowed = false
     func touchDown(atPoint pos : CGPoint) {
         if nextButton.contains(pos) {
-            if popUp.texture == SKTexture(imageNamed: "Dialogue-5")  {
+            if !draggingAllowed  {
                 popUp.texture = SKTexture(imageNamed: "Dialogue-6")
                 draggingAllowed = true
             } else if hasGone == 4 {
