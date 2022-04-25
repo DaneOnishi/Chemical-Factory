@@ -11,7 +11,7 @@ import SpriteKit
 class FinalScreen: SKScene {
     var performNavigation: (() -> ())?
     static func buildScene(performNavigation: (() -> ())?) -> FinalScreen {
-        let scene = FinalScreen(fileNamed: "6.FinalScreen")!
+        let scene = FinalScreen(fileNamed: "6.Final")!
         scene.performNavigation = performNavigation
         return scene
     }
@@ -21,6 +21,9 @@ class FinalScreen: SKScene {
     var talkPopUp: SKSpriteNode!
     var background: SKSpriteNode!
     var nextButton: SKSpriteNode!
+    var finalDialogues: [String] = [
+        "bye 2","bye 1"
+    ]
     
     override func didMove(to view: SKView) {
        
@@ -31,19 +34,41 @@ class FinalScreen: SKScene {
         
         witch.alpha = 0
         rat.alpha = 0
+        talkPopUp.alpha = 0
+        nextButton.alpha = 0
+        
+        run(.sequence([
+            .wait(forDuration: 2),
+            .run {
+                self.witch.alpha = 1
+                self.rat.alpha = 1
+                self.talkPopUp.alpha = 1
+                self.nextButton.alpha = 1
+            }
+        ]))
+        
+        if finalDialogues.count >= 1 {
+            let dialogueName = finalDialogues.removeFirst()
+            talkPopUp.texture = SKTexture(imageNamed: dialogueName)
+        }
     }
     
     func nextScreen() {
     }
     
     
-    
     override func update(_ currentTime: TimeInterval) {
-
+        
     }
 
     func touchDown(atPoint pos : CGPoint) {
         if nextButton.contains(pos) {
+            if finalDialogues.count >= 1 {
+                let dialogueName = finalDialogues.removeFirst()
+                talkPopUp.texture = SKTexture(imageNamed: dialogueName)
+            } else if finalDialogues.count < 1 {
+                performNavigation?()
+            }
             
         }
     }
@@ -71,7 +96,5 @@ class FinalScreen: SKScene {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
         for t in touches { touchUp(atPoint: t.location(in: self)) }
     }
-
-    
 }
 

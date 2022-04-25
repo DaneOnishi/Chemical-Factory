@@ -26,8 +26,8 @@ class WelcomeScreen: SKScene {
         dialogues = [
             Dialogue(popUp: "Dialogue-1", witchImage: .happy),
             Dialogue(popUp: "Dialogue-2", witchImage: .happy),
-            Dialogue(popUp: "Dialogue-3", witchImage: .happy),
-            Dialogue(popUp: "Dialogue-4", witchImage: .happy)
+            Dialogue(popUp: "Dialogue-3", witchImage: .thinking),
+            Dialogue(popUp: "Dialogue-4", witchImage: .laughing)
         ]
         
         witch = (childNode(withName: "Witch") as! SKSpriteNode)
@@ -94,9 +94,9 @@ struct Dialogue {
 }
 
 enum WitchMoods: String {
-    case thinking = "Potion"
+    case thinking = "Happy Medium"
     case happy = "Witch Medium"
-    case laughing = "Calderone"
+    case laughing = "Laughing Medium"
     case serious = "el rato 1-L"
 }
 

@@ -14,8 +14,11 @@ class EntitySimulation {
     var moleculeEntities: [ModelEntity] = []
     var cylinderEntities: [ModelEntity] = []
     
+    let moleculeType: MoleculeType
+    
     internal init(originEntity: ModelEntity, direction: SIMD3<Float>, moleculeType: MoleculeType) {
         self.anchorEntity = originEntity
+        self.moleculeType = moleculeType
         
         print("\n\nCreating simulation for \(moleculeType)")
         moleculeEntities = moleculeType

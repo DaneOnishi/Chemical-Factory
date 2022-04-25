@@ -4,8 +4,8 @@ import SpriteKit
 struct ContentView: View {
     var body: some View {
         NavigationView {
-            SplashScreenView()
-           // MaterView()
+           // SplashScreenView()
+            MaterView()
                 .ignoresSafeArea()
                 .navigationBarHidden(true)
                 .navigationBarBackButtonHidden(true)

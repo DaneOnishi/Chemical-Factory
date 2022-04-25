@@ -16,8 +16,7 @@ struct MaterView: View {
         
         VStack {
             NavigationLink(isActive: $navigated, destination: {
-//                PotionView()
-                EmptyView()
+                PotionView()
             }) {
                 EmptyView()
             }

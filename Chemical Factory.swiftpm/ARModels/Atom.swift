@@ -18,13 +18,26 @@ enum Atom: CaseIterable {
     var color: UIColor {
         switch self {
         case .n:
-            return .green
+            return .white
         case .o:
-            return .blue
+            return .white
         case .h:
-            return .red
+            return .white
         case .c:
-            return .yellow
+            return .white
+        }
+    }
+    
+    var textureName: String {
+        switch self {
+        case .n:
+            return "texture_2"
+        case .o:
+            return "texture_3"
+        case .h:
+            return "texture_4"
+        case .c:
+            return "texture_5"
         }
     }
     
@@ -60,7 +73,7 @@ enum Atom: CaseIterable {
         var sphereMaterial = PhysicallyBasedMaterial()
         
         sphereMaterial.baseColor.tint = atom.color
-        sphereMaterial.baseColor.texture = MaterialParameters.Texture(try! TextureResource.load(named: "texture_2"))
+        sphereMaterial.baseColor.texture = MaterialParameters.Texture(try! TextureResource.load(named: atom.textureName))
         
         sphereMaterial.normal = .init(texture:
                                          MaterialParameters.Texture(try! TextureResource.load(named: "texture_2_normal")))

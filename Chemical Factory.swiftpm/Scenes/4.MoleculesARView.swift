@@ -11,6 +11,10 @@ import RealityKit
 import ARKit
 import SwiftUI
 
+protocol MoleculesARViewDelegate: AnyObject {
+    func moleculeCompleted(molecule: MoleculeType)
+}
+
 class MoleculesARView: ARView {
     
     enum State {
@@ -22,6 +26,8 @@ class MoleculesARView: ARView {
     
     // Create a new anchor to add content to
     let anchor = AnchorEntity()
+    
+    weak var moleculeDelegate: MoleculesARViewDelegate?
     
     var state = State.empty
     
@@ -186,13 +192,16 @@ class MoleculesARView: ARView {
                     .filter { $0 != currentEntity }
 
                 if otherEntities.first != nil,
-                    allEntities.contains(currentEntity) {
+                    allEntities.contains(currentEntity),
+                    let currentEntitySimulation = currentEntitySimulation {
                     
-                    currentEntitySimulation?.anchorEntity.collision = nil
-                    currentEntitySimulation?.anchorEntity.model = nil
+                    currentEntitySimulation.anchorEntity.collision = nil
+                    currentEntitySimulation.anchorEntity.model = nil
+                    
+                    moleculeDelegate?.moleculeCompleted(molecule: currentEntitySimulation.moleculeType)
                     
                     currentEntity.removeFromParent()
-                    currentEntitySimulation = nil
+                    self.currentEntitySimulation = nil
                     
                     print("Created succesfully!")
                 }

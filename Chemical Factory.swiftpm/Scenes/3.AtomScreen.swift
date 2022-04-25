@@ -51,7 +51,6 @@ class AtomScreen: SKScene {
     override func didMove(to view: SKView) {
         
         popUp = (childNode(withName: "Talk Balone With Witch") as! SKSpriteNode)
-        
         lightPoint = (childNode(withName: "LightPoint") as! SKLightNode)
         lightPoint.isEnabled = true
         animateLightNode()
@@ -65,10 +64,9 @@ class AtomScreen: SKScene {
         eletronItem = (childNode(withName: "Eletron") as! SKSpriteNode)
         nucleoItem = (childNode(withName: "Nucleo") as! SKSpriteNode)
         verifyDialogue()
-        
         popUp.texture = SKTexture(imageNamed: "Dialogue-5")
         
-        
+    
         imageList = [protonItem, neutronItem, eletronItem, nucleoItem]
         
         for image in imageList {
@@ -232,22 +230,22 @@ class AtomScreen: SKScene {
         if hitBox.contains(pos) {
             if dragging == protonItem {
                 showNodes(nodes: protons)
-                popUp.texture = SKTexture(imageNamed: "Dialogue-7")
+                popUp.texture = SKTexture(imageNamed: "Ativo 55")
                 hasGone += 1
                 dragging?.alpha = 0.5
             } else if dragging == neutronItem {
                 showNodes(nodes: neutrons)
-                popUp.texture = SKTexture(imageNamed: "Dialogue-8")
+                popUp.texture = SKTexture(imageNamed: "Ativo 54")
                 hasGone += 1
                 dragging?.alpha = 0.5
             } else if dragging == nucleoItem {
                 showNodes(nodes: nucleus)
-                popUp.texture = SKTexture(imageNamed: "Talk Balone With Witch")
+                popUp.texture = SKTexture(imageNamed: "Ativo 42")
                 hasGone += 1
                 dragging?.alpha = 0.5
             } else if dragging == eletronItem {
                 showNodes(nodes: eletrons)
-                popUp.texture = SKTexture(imageNamed: "Dialogue-9")
+                popUp.texture = SKTexture(imageNamed: "Ativo 53")
                 hasGone += 1
                 dragging?.alpha = 0.5
             }

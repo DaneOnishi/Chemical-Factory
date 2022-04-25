@@ -33,7 +33,6 @@ class MenuScreen: SKScene {
         playButton = childNode(withName: "Play Button") as! SKSpriteNode
         soundButton = (childNode(withName: "Sound Button") as! SKSpriteNode)
         contentButton = childNode(withName: "Content Button") as! SKSpriteNode
-        
         elRato.position = CGPoint(x: 150, y: 200)
         animationSetup()
         
