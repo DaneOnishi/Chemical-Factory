@@ -210,7 +210,7 @@ class MaterScreen: SKScene {
         guard !dialogues.isEmpty else { return }
         let (block, dialogue) = dialogues.removeFirst()
         
-        popUp.run(.setTexture(dialogue.texture!, resize: true))
+        popUp.run(.setTexture(dialogue.texture!, resize: false))
         actionBlocked = block
         
         nextButton.isHidden = !block

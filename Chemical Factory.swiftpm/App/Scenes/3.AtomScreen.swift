@@ -201,17 +201,21 @@ class AtomScreen: SKScene {
         magicSequence.append(SKTexture(imageNamed: "fog-5"))
         magicSequence.append(SKTexture(imageNamed: "fog-6"))
         
-        let frames = SKAction.animate(with: magicSequence, timePerFrame: 0.1, resize: false, restore: false)
+        let frames = SKAction.animate(with: magicSequence, timePerFrame: 0.1, resize: true, restore: false)
         let animation = SKAction.sequence([frames, .fadeOut(withDuration: 0)])
         
         for image in imageList {
             let newNode = SKSpriteNode()
             newNode.position = image.position
-            newNode.zPosition = 5
-            
-            newNode.run(animation)
+            newNode.zPosition = 100
             
             addChild(newNode)
+            
+            newNode.setScale(2)
+            newNode.run(animation) {
+                image.alpha = 1
+            }
+            
         }
         
     }
@@ -228,10 +232,7 @@ class AtomScreen: SKScene {
         }
         
         if magicalWand.contains(pos) && draggingAllowed {
-            for image in imageList {
-                image.alpha = 1
-                magicAnimation()
-            }
+            magicAnimation()
         }
         
         for imagem in imageList where imagem.alpha == 1

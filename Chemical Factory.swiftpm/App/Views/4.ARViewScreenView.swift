@@ -40,19 +40,15 @@ struct ARViewScreenView: View {
                     Spacer()
                     HStack() {
                         if vm.isShowingMoleculeList {
-                            Image("Dialogue-11")
+                            Image("Shopping List")
                             Spacer()
                         }
                     }
                     Spacer()
                     HStack {
                         Spacer()
-                        Text(buttonText)
+                        Image("Magical Wand With Circle")
                             .padding()
-                            .background(
-                                Color.red
-                            )
-                            .cornerRadius(16)
                             .onTapGesture {
                                 switch vm.currentState {
                                 case .empty:
@@ -64,6 +60,8 @@ struct ARViewScreenView: View {
                                 default: break
                                 }
                             }
+            
+
                     }
                 }
             }
@@ -119,6 +117,8 @@ class ARViewContainerViewModel: ObservableObject {
             break
         }
         view?.state = new
+        
+        objectWillChange.send()
     }
     
     var currentState: MoleculesARView.State? {
