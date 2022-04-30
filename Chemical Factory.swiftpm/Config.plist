@@ -1,4 +1,0 @@
-{
-	"NSCameraUsageDescription" = "Chemical Factory needs access to the camera so it's able to display AR content";
-	"NSMicrophoneUsageDescription" = "Chemical Factory needs microphone access it's able to recognize audio input";
-}
